@@ -10,7 +10,7 @@
          BufferedReader in = null; // for reading form ServerRouter
 			InetAddress addr = InetAddress.getLocalHost();
 			String host = addr.getHostAddress(); // Server machine's IP			
-			String routerName = "127.0.0.1"; // ServerRouter host name(the IP "127.0.0.1", is a local IP address/loopback IP address)
+			String routerName = "127.0.0.1"; // ServerRouter host name (the IP "127.0.0.1", is a local IP address/loopback IP address)
 			int SockNum = 5555; // port number
 			
 			// Tries to connect to the ServerRouter
