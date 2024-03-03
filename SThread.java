@@ -7,7 +7,7 @@ public class SThread extends Thread
 {
 	private Object [][] RTable; // routing table
 	private PrintWriter out, outTo; // writers (for writing back to the machine and to destination)
-   private BufferedReader in; // reader (for reading from the machine connected to)
+   	private BufferedReader in; // reader (for reading from the machine connected to)
 	private String inputLine, outputLine, destination, addr; // communication strings
 	private Socket outSocket; // socket for communicating with a destination
 	private int ind; // indext in the routing table
@@ -52,21 +52,42 @@ public class SThread extends Thread
 						outTo = new PrintWriter(outSocket.getOutputStream(), true); // assigns a writer
 				}}
 		
-		// Communication loop	
+		// Communication loop
 		while ((inputLine = in.readLine()) != null) {
-            System.out.println("Client/Server said: " + inputLine);
-            if (inputLine.equals("Bye.")) // exit statement
-					break;
-            outputLine = inputLine; // passes the input from the machine to the output string for the destination
-				
-				if ( outSocket != null){				
-				outTo.println(outputLine); // writes to the destination
-				}			
-       }// end while		 
+                System.out.println("Client/Server said: " + inputLine);
+                if (inputLine.equals("Bye.")) // exit statement
+                    break;
+
+                // Check if it's audio communication
+                if (inputLine.equals("audio/wav")) {
+                    handleAudioCommunication();
+                } else {
+                    outputLine = inputLine; // passes the input from the machine to the output string for the destination
+
+                    if (outSocket != null) {
+                        outTo.println(outputLine); // writes to the destination
+                    }
+                }
+            } // end while		 
 		 }// end try
 			catch (IOException e) {
                System.err.println("Could not listen to socket.");
                System.exit(1);
          }
+	
 	}
+	private void handleAudioCommunication() {
+        try {
+            FileOutputStream audioOutputStream = new FileOutputStream("received_audio.wav");
+
+            String audioData;
+            while (!(audioData = in.readLine()).equals("audio/wav")) {
+                audioOutputStream.write(audioData.getBytes());
+            }
+
+            audioOutputStream.close();
+        } catch (IOException e) {
+            System.err.println("Error handling audio communication: " + e.getMessage());
+        }
+    }
 }

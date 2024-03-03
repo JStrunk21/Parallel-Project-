@@ -32,11 +32,27 @@
          String fromServer; // messages sent to ServerRouter
          String fromClient; // messages received from ServerRouter      
  			String address ="127.0.0.1"; // destination IP (Client)
+
+         // Variables for audio passing
+         FileOutputStream audioOutputStream = new FileOutputStream("received_audio.wav");
 			
 			// Communication process (initial sends/receives)
 			out.println(address);// initial send (IP of the destination Client)
 			fromClient = in.readLine();// initial receive from router (verification of connection)
 			System.out.println("ServerRouter: " + fromClient);
+
+         // Communication process for audio
+         String clientAddress = in.readLine();
+         System.out.println("Client Address: " + clientAddress);
+
+         String clientIP = in.readLine();
+         System.out.println("Client IP: " + clientIP);
+        
+         // Receiving audio
+         int audioByte;
+         while ((audioByte = in.read()) != -1) {
+            audioOutputStream.write(audioByte);
+         }
 			         
 			// Communication while loop
       	while ((fromClient = in.readLine()) != null) {

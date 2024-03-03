@@ -1,5 +1,6 @@
    import java.io.*;
    import java.net.*;
+import java.nio.Buffer;
 
     public class TCPClient {
        public static void main(String[] args) throws IOException {
@@ -29,8 +30,10 @@
             }
 				
       	// Variables for message passing	
-         Reader reader = new FileReader("file.txt"); 
-			try (BufferedReader fromFile = new BufferedReader(reader)) {
+         Reader textReader = new FileReader("file.txt"); 
+         Reader audioReader = new FileReader("audio.wav");
+			try (BufferedReader fromFile = new BufferedReader(textReader);
+            BufferedReader audioFile = new BufferedReader(audioReader)) {
             String fromServer; // messages received from ServerRouter
             String fromUser; // messages sent to ServerRouter
             String address ="127.0.0.1"; // destination IP (Server)
@@ -43,6 +46,13 @@
             out.println(host); // Client sends the IP of its machine as initial send
             t0 = System.currentTimeMillis();
             
+            
+            int audioChar;
+            while ((audioChar = audioFile.read()) != -1) {
+            	out.write(audioChar);
+            }
+            out.flush(); //makes sure all data is sent
+
             // Communication while loop
             while ((fromServer = in.readLine()) != null) {
                System.out.println("Server: " + fromServer);
